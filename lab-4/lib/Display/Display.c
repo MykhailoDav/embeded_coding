@@ -79,27 +79,39 @@ void display_number(uint16_t num)
 
         first_nonzero = 0;
         while (first_nonzero < 3 && digs[first_nonzero] == 0)
+        {
             first_nonzero++;
+        }
         if (num == 0)
+        {
             first_nonzero = 3;
+        }
     }
 
     if (i >= first_nonzero)
+    {
         show_pair(digit_map[digs[i]], digit_select[i]);
+    }
     else
+    {
         show_pair(0xFF, digit_select[i]);
-
+    }
     i = (i + 1) % 4;
 }
 
 static uint8_t char_to_seg(char c)
 {
     if (c >= '0' && c <= '9')
+    {
         return digit_map[c - '0'];
-
+    }
     for (uint8_t i = 0; i < sizeof(letter_map) / sizeof(letter_map[0]); i++)
+    {
         if (letter_map[i].c == c)
+        {
             return letter_map[i].seg;
+        }
+    }
 
     return 0xFF;
 }
@@ -109,8 +121,9 @@ void display_word(const char *text)
     static uint8_t i = 0;
     uint8_t len = strlen(text);
     if (len > 4)
+    {
         len = 4;
-
+    }
     uint8_t seg = char_to_seg(text[i]);
     show_pair(seg, digit_select[i]);
 

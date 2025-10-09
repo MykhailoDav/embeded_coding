@@ -32,7 +32,6 @@ int main(void)
 {
   display_init();
 
-  // Настройка кнопок
   DDRD &= ~((1 << BTN_START) | (1 << BTN_STOP) | (1 << BTN_RESET));
   PORTD |= (1 << BTN_START) | (1 << BTN_STOP) | (1 << BTN_RESET);
 

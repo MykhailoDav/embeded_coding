@@ -3,11 +3,10 @@
 static ButtonDef *btn_list = NULL;
 static uint8_t btn_count = 0;
 
-// Константи поведінки
-static const uint16_t long_press_time = 2000;   // 2 с — довге натискання
-static const uint16_t hold_start_delay = 500;   // 0.5 с до першого повтору
-static const uint16_t hold_initial_delay = 200; // початковий інтервал між hold
-static const uint16_t hold_min_delay = 50;      // мінімальний інтервал
+static const uint16_t long_press_time = 2000;
+static const uint16_t hold_start_delay = 500;
+static const uint16_t hold_initial_delay = 200;
+static const uint16_t hold_min_delay = 50;
 
 void Buttons_Init(ButtonDef *buttons, uint8_t count)
 {
@@ -22,9 +21,8 @@ void Buttons_Update(uint32_t millis)
         ButtonState *b = btn_list[i].state;
         uint8_t pin = btn_list[i].pin;
 
-        bool is_pressed = !(PIND & (1 << pin)); // активний низький рівень
+        bool is_pressed = !(PIND & (1 << pin));
 
-        // Скидаємо миттєві події
         b->pressed = false;
         b->released = false;
         b->long_press = false;
@@ -49,7 +47,6 @@ void Buttons_Update(uint32_t millis)
             if (millis - b->press_start > long_press_time)
                 b->long_press = true;
 
-            // Автоповтор (hold)
             if (millis - b->press_start > hold_start_delay)
             {
                 uint16_t hold_time = millis - b->press_start;

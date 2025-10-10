@@ -57,9 +57,7 @@ int main(void)
     if (tick_time < 10)
       tick_time = 10;
 
-    // -----------------------
     // RESET
-    // -----------------------
     if (btn_reset.long_press)
     {
       if (state == STATE_NORMAL)
@@ -81,9 +79,7 @@ int main(void)
       }
     }
 
-    // -----------------------
     // MAIN LOGIC
-    // -----------------------
     if (state == STATE_NORMAL)
     {
       if (btn_start.pressed)

@@ -28,6 +28,8 @@ ButtonState btn_start = {0};
 ButtonState btn_stop = {0};
 ButtonState btn_reset = {0};
 
+bool in_garland_effect = false;
+
 int main(void)
 {
   display_init();
@@ -46,12 +48,13 @@ int main(void)
   bool menu_intro_done = false;
   uint32_t menu_intro_start = 0;
 
-  while (1)
+  for (;;)
   {
     _delay_ms(1);
     millis++;
 
     Buttons_Update(millis);
+    display_garland_update(millis);
 
     tick_time = 2000 - (speed_percent * 10);
     if (tick_time < 10)
@@ -87,20 +90,50 @@ int main(void)
       if (btn_stop.pressed)
         running = false;
 
+      // якщо гірлянда запущена
+      if (display_garland_active())
+      {
+        in_garland_effect = true;
+        running = false; // зупинити підрахунок
+      }
+      else if (in_garland_effect)
+      {
+        // гірлянда завершилась
+        in_garland_effect = false;
+      }
+
       if (running && (millis - last_update >= tick_time))
       {
         last_update = millis;
         if (counter < 9999)
+        {
           counter++;
+
+          if (counter == 5 && !display_garland_active())
+          {
+            display_garland_start();
+          }
+        }
         else
+        {
           running = false;
+        }
       }
 
-      if (!running && (millis / 500) % 2 == 0)
+      if (in_garland_effect)
+      {
+      }
+      else if (!running && (millis / 500) % 2 == 0)
+      {
         display_off();
+      }
       else
+      {
         display_number(counter);
+      }
     }
+
+    // MENU MODE
     else if (state == STATE_MENU)
     {
       if (!menu_intro_done)

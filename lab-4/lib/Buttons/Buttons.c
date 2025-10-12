@@ -28,19 +28,19 @@ void Buttons_Update(uint32_t millis)
         b->long_press = false;
         b->hold = false;
 
-        // --- перше натискання ---
+        // перше натискання
         if (is_pressed && !b->was_pressed)
         {
             b->pressed = true;
             b->press_start = millis;
             b->last_hold_time = millis;
         }
-        // --- відпускання ---
+        // відпускання
         else if (!is_pressed && b->was_pressed)
         {
             b->released = true;
         }
-        // --- утримання ---
+        // утримання
         else if (is_pressed && b->was_pressed)
         {
             // Довге утримання (>2 c)

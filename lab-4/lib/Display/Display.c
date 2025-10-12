@@ -1,4 +1,15 @@
 #include "Display.h"
+#include <string.h>
+#include <util/delay.h>
+
+#define SEG_A 0b11111110
+#define SEG_B 0b11111101
+#define SEG_C 0b11111011
+#define SEG_D 0b11110111
+#define SEG_E 0b11101111
+#define SEG_F 0b11011111
+#define SEG_G 0b10111111
+
 
 const uint8_t digit_map[10] = {
     0b11000000, // 0
@@ -133,4 +144,73 @@ void display_word(const char *text)
 void display_off(void)
 {
     show_pair(0xFF, 0b1111);
+}
+
+static bool garland_running = false;
+static uint8_t garland_round = 0;
+static uint8_t garland_pos = 0;
+static uint32_t garland_last_time = 0;
+
+void display_garland_start(void)
+{
+    garland_running = true;
+    garland_round = 0;
+    garland_pos = 0;
+    garland_last_time = 0;
+}
+
+bool display_garland_active(void)
+{
+    return garland_running;
+}
+
+void display_garland_update(uint32_t millis)
+{
+    if (!garland_running)
+        return;
+
+    if (millis - garland_last_time < 100)
+        return;
+
+    garland_last_time = millis;
+
+    PORTB &= ~(1 << LATCH);
+    spi_send(0xFF);
+    spi_send(0x00);
+    PORTB |= (1 << LATCH);
+
+    static const uint8_t seg_pattern[] = {
+        SEG_A, SEG_A, SEG_A, SEG_A,
+        SEG_B, SEG_C, SEG_D,
+        SEG_D, SEG_D, SEG_D,
+        SEG_E, SEG_F};
+
+    static const uint8_t dig_pattern[] = {
+        0, 1, 2, 3,
+        3, 3, 3,
+        2, 1, 0,
+        0, 0};
+
+    const uint8_t step_count = sizeof(seg_pattern);
+
+    uint8_t seg = seg_pattern[garland_pos];
+    uint8_t dig = digit_select[dig_pattern[garland_pos]];
+
+    PORTB &= ~(1 << LATCH);
+    spi_send(seg);
+    spi_send(dig);
+    PORTB |= (1 << LATCH);
+
+    garland_pos++;
+    if (garland_pos >= step_count)
+    {
+        garland_pos = 0;
+        garland_round++;
+
+        if (garland_round >= 5)
+        {
+            garland_running = false;
+            display_off();
+        }
+    }
 }

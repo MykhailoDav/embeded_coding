@@ -74,6 +74,7 @@ void Tetris_Init(TetrisGame *g)
 void Tetris_Update(TetrisGame *g, TetrisButtonManager *btns)
 {
     static bool downWasHeld = false; // чи був soft-drop перед відпусканням
+    static bool pauseHandled = false;
     static uint32_t tick = 0, lastFall = 0;
 
     if (g->gameOver)
@@ -88,9 +89,31 @@ void Tetris_Update(TetrisGame *g, TetrisButtonManager *btns)
 
     // --- Пауза ---
     if (TetrisButtons_IsLongPress(btns, BTN_ROTATE))
-        g->paused = !g->paused;
+    {
+        if (!pauseHandled) // спрацьовує лише один раз
+        {
+            g->paused = !g->paused;
+            pauseHandled = true;
+        }
+    }
+    else if (!TetrisButtons_IsHold(btns, BTN_ROTATE))
+    {
+        // коли кнопку відпустили — дозволяємо наступне спрацювання
+        pauseHandled = false;
+    }
+
+    // якщо гра на паузі — нічого не оновлюємо, крім перевірки повторного long press
     if (g->paused)
+    {
+        matrix_clear_buffer();
+        // Можна намалювати символ “P” або миготіння
+        for (int y = 2; y < 6; y++)
+            for (int x = 2; x < 6; x++)
+                matrix_set_pixel(x, y, (tick >> 3) & 1); // миготіння
+        matrix_draw();
+        tick++;
         return;
+    }
 
     // --- Рух ---
     if (TetrisButtons_IsPressed(btns, BTN_LEFT) && can_place(g, g->current.x - 1, g->current.y))

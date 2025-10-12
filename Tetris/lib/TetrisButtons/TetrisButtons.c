@@ -6,7 +6,7 @@ void TetrisButtons_Init(TetrisButtonManager *mgr)
     DDRD &= ~((1 << PIN_LEFT) | (1 << PIN_RIGHT) | (1 << PIN_DOWN) | (1 << PIN_ROTATE));
     PORTD |= ((1 << PIN_LEFT) | (1 << PIN_RIGHT) | (1 << PIN_DOWN) | (1 << PIN_ROTATE));
 
-    // === Прив’язка структур ===
+    // === Structure binding ===
     mgr->defs[BTN_LEFT] = (ButtonDef){.state = &mgr->states[BTN_LEFT], .pin = PIN_LEFT};
     mgr->defs[BTN_RIGHT] = (ButtonDef){.state = &mgr->states[BTN_RIGHT], .pin = PIN_RIGHT};
     mgr->defs[BTN_DOWN] = (ButtonDef){.state = &mgr->states[BTN_DOWN], .pin = PIN_DOWN};
@@ -17,7 +17,6 @@ void TetrisButtons_Init(TetrisButtonManager *mgr)
 
 void TetrisButtons_Update(TetrisButtonManager *mgr, uint32_t millis)
 {
-    (void)mgr; // не використовується, але залишено для узгодженості
     Buttons_Update(millis);
 }
 
@@ -40,4 +39,3 @@ bool TetrisButtons_IsReleased(TetrisButtonManager *mgr, TetrisButton btn)
 {
     return mgr->states[btn].released;
 }
-

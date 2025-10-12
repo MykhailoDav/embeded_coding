@@ -3,6 +3,7 @@
 #include "TetrisButtons.h"
 #include "TetrisEngine.h"
 #include "MAX7219Matrix.h"
+#include "MatrixRain.h"
 
 #define BASE_DELAY 15
 
@@ -15,13 +16,7 @@ void setup()
     max7219_clear();
     TetrisButtons_Init(&btns);
 
-    for (uint8_t y = 0; y < 32; y++)
-    {
-        matrix_clear_buffer();
-        matrix_set_pixel(3, y, 1);
-        matrix_draw();
-        _delay_ms(10);
-    }
+    MatrixRain_StartAnimation();
 
     Tetris_Init(&game);
 }

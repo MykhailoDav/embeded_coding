@@ -15,7 +15,7 @@ typedef enum
 
 typedef struct
 {
-    int8_t x, y;      // позиція фігури
+    int8_t x, y;
     uint8_t shape;    // 0–6
     uint8_t rotation; // 0–3
 } TetrisPiece;
@@ -37,3 +37,4 @@ static inline uint8_t shape_cell(uint8_t shape, uint8_t rotation, int r, int c);
 
 static void clear_full_lines(TetrisGame *g);
 static void draw_LOSE(void);
+static void draw_P(void);

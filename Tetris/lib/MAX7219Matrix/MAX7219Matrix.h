@@ -23,7 +23,6 @@ enum {
   MAX7219_DISPLAYTEST = 0x0F
 };
 
-// >>> ВЕРТИКАЛЬ 8×32 <<<
 #define MATRIX_WIDTH   8
 #define MATRIX_HEIGHT 32
 

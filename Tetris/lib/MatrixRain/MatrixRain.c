@@ -8,7 +8,7 @@
 #define HEIGHT 32
 #define DROPS 12
 #define RAIN_DELAY 30
-#define RAIN_FRAMES 20
+#define RAIN_FRAMES 200
 #define MIN_LEN 3
 #define MAX_LEN 7
 

@@ -81,7 +81,6 @@ void Tetris_Init(TetrisGame *g)
 void Tetris_Update(TetrisGame *g, TetrisButtonManager *btns)
 {
     static bool downWasHeld = false;
-    static bool pauseHandled = false;
     static uint32_t tick = 0, lastFall = 0;
 
     if (g->gameOver)
@@ -94,27 +93,56 @@ void Tetris_Update(TetrisGame *g, TetrisButtonManager *btns)
         return;
     }
 
-    // --- Pause ---
-    if (TetrisButtons_IsLongPress(btns, BTN_ROTATE))
+    // --- Pause handling ---
+    static bool pauseHandled = false;
+    static bool pauseJustEntered = false;
+    static uint16_t pauseCooldown = 0;
+
+    if (pauseJustEntered)
     {
-        if (!pauseHandled)
+        if (pauseCooldown > 0)
         {
-            g->paused = !g->paused;
-            pauseHandled = true;
+            pauseCooldown--;
+            matrix_clear_buffer();
+            draw_P();
+            matrix_draw();
+            return;
         }
-    }
-    else if (!TetrisButtons_IsHold(btns, BTN_ROTATE))
-    {
-        pauseHandled = false;
+        else
+        {
+            pauseJustEntered = false;
+        }
     }
 
     if (g->paused)
     {
+        if (TetrisButtons_IsPressed(btns, BTN_ROTATE))
+        {
+            g->paused = false;
+            return;
+        }
+
         matrix_clear_buffer();
         draw_P();
         matrix_draw();
-        tick++;
         return;
+    }
+    else
+    {
+        if (TetrisButtons_IsLongPress(btns, BTN_ROTATE))
+        {
+            if (!pauseHandled)
+            {
+                g->paused = true;
+                pauseHandled = true;
+                pauseJustEntered = true;
+                pauseCooldown = 20;
+            }
+        }
+        else if (!TetrisButtons_IsHold(btns, BTN_ROTATE))
+        {
+            pauseHandled = false;
+        }
     }
 
     // --- LEFT ---
@@ -339,18 +367,27 @@ static void draw_LOSE(void)
 
 static void draw_P(void)
 {
+    static uint16_t frame = 0;
+    frame++;
+
+    // Blink every 60 frames
+    bool visible = (frame / 60) % 2 == 0;
+
     matrix_clear_buffer();
 
-    const uint8_t P[7] = {0x3E, 0x22, 0x22, 0x3E, 0x20, 0x20, 0x00};
-
-    for (uint8_t row = 0; row < 7; row++)
+    if (visible)
     {
-        uint8_t bits = P[row];
-        for (uint8_t col = 0; col < 8; col++)
+        const uint8_t P[7] = {0x3E, 0x22, 0x22, 0x3E, 0x20, 0x20, 0x00};
+
+        for (uint8_t row = 0; row < 7; row++)
         {
-            if (bits & (1 << (7 - col)))
+            uint8_t bits = P[row];
+            for (uint8_t col = 0; col < 8; col++)
             {
-                matrix_set_pixel(col - 1, row + 9, 1);
+                if (bits & (1 << (7 - col)))
+                {
+                    matrix_set_pixel(col - 1, row + 9, 1);
+                }
             }
         }
     }

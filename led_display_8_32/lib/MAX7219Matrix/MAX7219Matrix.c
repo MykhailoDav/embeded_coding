@@ -6,9 +6,8 @@
 #define MODULES 4
 
 static uint8_t g_devices = MODULES;
-static uint8_t buffer[MATRIX_HEIGHT][MATRIX_WIDTH / 8]; // 8x32 → [8][4]
+static uint8_t buffer[MATRIX_HEIGHT][MATRIX_WIDTH / 8];
 
-// === Внутрішні функції для керування CS ===
 static inline void cs_low(void)
 {
     MAX7219_CS_PORT &= ~_BV(MAX7219_CS_BIT);
@@ -19,7 +18,6 @@ static inline void cs_high(void)
     MAX7219_CS_PORT |= _BV(MAX7219_CS_BIT);
 }
 
-// === Надсилання команд одночасно на всі модулі ===
 static void send_all(uint8_t addr, uint8_t data)
 {
     cs_low();
@@ -31,7 +29,6 @@ static void send_all(uint8_t addr, uint8_t data)
     cs_high();
 }
 
-// === Ініціалізація MAX7219 ===
 void max7219_init(uint8_t devices, uint8_t intensity)
 {
     g_devices = devices;
@@ -50,7 +47,6 @@ void max7219_init(uint8_t devices, uint8_t intensity)
     matrix_clear_buffer();
 }
 
-// === Очищення всіх матриць ===
 void max7219_clear(void)
 {
     for (uint8_t row = 1; row <= 8; row++)
@@ -59,7 +55,6 @@ void max7219_clear(void)
     }
 }
 
-// === Встановлення одного рядка для всіх пристроїв ===
 void max7219_set_row_all(uint8_t row1to8, uint8_t pattern)
 {
     if (row1to8 < 1 || row1to8 > 8)
@@ -74,7 +69,6 @@ void max7219_set_row_all(uint8_t row1to8, uint8_t pattern)
     cs_high();
 }
 
-// === Відправка байта до одного пристрою ===
 void max7219_send_to_device(uint8_t idx, uint8_t addr, uint8_t data)
 {
     if (idx >= g_devices)
@@ -97,9 +91,6 @@ void max7219_send_to_device(uint8_t idx, uint8_t addr, uint8_t data)
     cs_high();
 }
 
-// =================== Буферні функції ===================
-
-// Очищення буфера
 void matrix_clear_buffer(void)
 {
     for (uint8_t y = 0; y < MATRIX_HEIGHT; y++)
@@ -111,7 +102,6 @@ void matrix_clear_buffer(void)
     }
 }
 
-// Установлення конкретного пікселя
 void matrix_set_pixel(uint8_t x, uint8_t y, uint8_t on)
 {
     if (x >= MATRIX_WIDTH || y >= MATRIX_HEIGHT)
@@ -126,7 +116,6 @@ void matrix_set_pixel(uint8_t x, uint8_t y, uint8_t on)
         buffer[y][block] &= ~(1 << (7 - bit));
 }
 
-// Малювання вмісту буфера на всі модулі
 void matrix_draw(void)
 {
     for (uint8_t y = 0; y < MATRIX_HEIGHT; y++)
@@ -134,9 +123,8 @@ void matrix_draw(void)
         cs_low();
         for (int8_t dev = g_devices - 1; dev >= 0; --dev)
         {
-            uint8_t data = buffer[7 - y][dev]; // інвертовано по вертикалі (верх = рядок 0)
+            uint8_t data = buffer[7 - y][dev];
 
-            // Дзеркальне відображення по горизонталі (FLIP_X)
             uint8_t mirrored = 0;
             for (uint8_t b = 0; b < 8; b++)
             {
@@ -144,7 +132,7 @@ void matrix_draw(void)
                     mirrored |= (1 << (7 - b));
             }
 
-            spi_transfer(y + 1); // Рядки 1..8
+            spi_transfer(y + 1);
             spi_transfer(mirrored);
         }
         cs_high();

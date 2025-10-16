@@ -1,17 +1,56 @@
-#include <Arduino.h>
 #include "MAX7219Matrix.h"
 #include "SimpleSPI.h"
 #include "Font8x8.h"
+#include <stddef.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include <util/delay.h>
+#include <string.h>
 
 #define MATRIX_WIDTH 32
-#define CHAR_WIDTH 5
-#define CHAR_SPACING 1
+#define MATRIX_HEIGHT 8
+#define GLYPH_WIDTH 8
+#define GLYPH_SPACING 1
+#define TEXT_GAP 20
 
-// Текст для відображення
-const char text[] = "HELLO ARDUINO! 0123456789";
+const FontChar *findChar(const char *ch);
+int calcTextWidth(const char *txt);
+void drawTextOnce(int offset);
+void drawTextWrapped(int offset);
+void setup(void);
+void loop(void);
+
+const char text[] = "DAVUDENKO MYKHAILO IK-31";
 int textPos = MATRIX_WIDTH;
+int textWidth = 0;
 
-// === Пошук символу в таблиці ===
+void setup(void)
+{
+  max7219_init(4, 0);
+  max7219_clear();
+
+  textWidth = calcTextWidth(text) + TEXT_GAP;
+  textPos = MATRIX_WIDTH;
+}
+
+void loop(void)
+{
+  drawTextWrapped(textPos);
+  textPos--;
+
+  if (textPos <= -textWidth)
+    textPos += textWidth;
+
+  _delay_ms(70);
+}
+
+int main(void)
+{
+  setup();
+  for (;;)
+    loop();
+}
+
 const FontChar *findChar(const char *ch)
 {
   for (uint16_t i = 0; i < Font8x8Count; i++)
@@ -22,29 +61,42 @@ const FontChar *findChar(const char *ch)
   return NULL;
 }
 
-// === Малювання тексту ===
-void drawText(int offset)
+int calcTextWidth(const char *txt)
 {
-  matrix_clear_buffer();
-  int x = offset;
+  int w = 0;
+  const char *p = txt;
+  while (*p)
+  {
+    uint8_t len = 1;
+    if ((uint8_t)*p >= 0xC0)
+    {
+      if ((p[0] & 0xE0) == 0xC0)
+        len = 2;
+      else if ((p[0] & 0xF0) == 0xE0)
+        len = 3;
+    }
+    p += len;
+    w += GLYPH_WIDTH + GLYPH_SPACING;
+  }
+  return w;
+}
 
+void drawTextOnce(int offset)
+{
+  int x = offset;
   const char *p = text;
+
   while (*p)
   {
     char ch[4] = {0};
     uint8_t len = 1;
 
-    // підтримка UTF-8
     if ((uint8_t)*p >= 0xC0)
     {
       if ((p[0] & 0xE0) == 0xC0)
-      {
         len = 2;
-      }
       else if ((p[0] & 0xF0) == 0xE0)
-      {
         len = 3;
-      }
     }
 
     strncpy(ch, p, len);
@@ -53,44 +105,33 @@ void drawText(int offset)
     const FontChar *fc = findChar(ch);
     if (!fc)
     {
-      x += 8 + 1; // пропускаємо, якщо символ не знайдено
+      x += GLYPH_WIDTH + GLYPH_SPACING;
       continue;
     }
 
-    // === ОНОВЛЕНА ЧАСТИНА: малюємо символ 8x8 ===
-    for (uint8_t col = 0; col < 8; col++)
+    for (uint8_t col = 0; col < GLYPH_WIDTH; col++)
     {
       uint8_t bits = fc->data[col];
-      for (uint8_t y = 0; y < 8; y++)
+      int drawX = x + col;
+
+      if (drawX >= 0 && drawX < MATRIX_WIDTH)
       {
-        bool pixelOn = bits & (1 << y);
-        matrix_set_pixel(x + col, y, pixelOn);
+        for (uint8_t y = 0; y < MATRIX_HEIGHT; y++)
+        {
+          bool pixelOn = bits & (1 << y);
+          matrix_set_pixel(drawX, y, pixelOn);
+        }
       }
     }
-    x += 8 + 1; // ширина 8 + відступ 1
-  }
 
+    x += GLYPH_WIDTH + GLYPH_SPACING;
+  }
+}
+
+void drawTextWrapped(int offset)
+{
+  matrix_clear_buffer();
+  drawTextOnce(offset);
+  drawTextOnce(offset + textWidth);
   matrix_draw();
-}
-
-void setup()
-{
-  max7219_init(4, 1);
-  max7219_clear();
-}
-
-void loop()
-{
-  drawText(textPos);
-  delay(1);
-  textPos--;
-
-  // Обчислення довжини (5 + 1 піксель відступу)
-  int textWidth = strlen(text) * (CHAR_WIDTH + CHAR_SPACING);
-  if (textPos < -textWidth)
-  {
-    textPos = MATRIX_WIDTH;
-  }
-
-  delay(70); // швидкість руху
 }

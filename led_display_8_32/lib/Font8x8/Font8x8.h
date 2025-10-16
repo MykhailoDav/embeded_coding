@@ -3,12 +3,13 @@
 
 typedef struct
 {
-    char symbol[4];  // UTF-8 (напр. "Ї")
-    uint8_t data[8]; // 8x8 — кожен байт = стовпчик
+    char symbol[4];  // UTF-8
+    uint8_t data[8]; // 8x8
 } FontChar;
 
 static const FontChar Font8x8[] = {
     {" ", {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}}, // space
+    {"-", {0x00, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x00}}, // minus / dash (—)
 
     // ==== Digits ====
     {"0", {0x3C, 0x7E, 0xC3, 0xC3, 0xC3, 0xC3, 0x7E, 0x3C}},

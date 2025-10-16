@@ -1,0 +1,57 @@
+<circuit version="1.1.0-SR1" rev="2005" stepSize="1000000" stepsPS="1000000" NLsteps="100000" reaStep="1000000" animate="0" >
+
+<item itemtype="MCU" CircId="mega328-1" mainComp="false" Show_id="true" Show_Val="false" Pos="-48,-140" rotation="0" hflip="1" vflip="1" label="mega328-1" idLabPos="0,-20" labelrot="0" valLabPos="-16,20" valLabRot="0" Frequency="16 MHz" Program="E:/III_kurs/Embeded_coding/projects/Lab-4_1/.pio/build/nanoatmega328new/firmware.hex" Auto_Load="false" saveEepr="true" Logic_Symbol="false" Rst_enabled="false" Ext_Osc="false" Wdt_enabled="false" Clk_Out="false" MainMcu="true" SerialMon="-1" />
+
+<item itemtype="LedMatrix" CircId="LedMatrix-2" mainComp="false" Show_id="false" Show_Val="false" Pos="56,-132" rotation="0" hflip="1" vflip="1" label="LedMatrix-2" idLabPos="-16,-24" labelrot="0" valLabPos="-16,20" valLabRot="0" Color="Yellow" Rows="8" Cols="8" Vertical_Pins="false" Threshold="2.4 V" MaxCurrent="20 mA" Resistance="0.6 Ω" />
+
+<item itemtype="ResistorDip" CircId="ResistorDip-3" mainComp="false" ShowProp="Resistance" Show_id="false" Show_Val="true" Pos="80,-36" rotation="-90" hflip="1" vflip="1" label="ResistorDip-3" idLabPos="-24,-40" labelrot="0" valLabPos="4,-26" valLabRot="90" Resistance="50 Ω" Size="8" PullUp="false" PuVolt="5 V" />
+
+<item itemtype="Connector" uid="Connector-1" startpinid="LedMatrix-2-pinCol0" endpinid="ResistorDip-3-resistor0-ePin1" pointList="56,-60,56,-52" />
+
+<item itemtype="Connector" uid="Connector-2" startpinid="LedMatrix-2-pinCol1" endpinid="ResistorDip-3-resistor1-ePin3" pointList="64,-60,64,-52" />
+
+<item itemtype="Connector" uid="Connector-3" startpinid="LedMatrix-2-pinCol2" endpinid="ResistorDip-3-resistor2-ePin5" pointList="72,-60,72,-52" />
+
+<item itemtype="Connector" uid="Connector-5" startpinid="LedMatrix-2-pinCol3" endpinid="ResistorDip-3-resistor3-ePin7" pointList="80,-60,80,-52" />
+
+<item itemtype="Connector" uid="Connector-6" startpinid="LedMatrix-2-pinCol4" endpinid="ResistorDip-3-resistor4-ePin9" pointList="88,-60,88,-52" />
+
+<item itemtype="Connector" uid="Connector-7" startpinid="LedMatrix-2-pinCol5" endpinid="ResistorDip-3-resistor5-ePin11" pointList="96,-60,96,-52" />
+
+<item itemtype="Connector" uid="Connector-8" startpinid="LedMatrix-2-pinCol6" endpinid="ResistorDip-3-resistor6-ePin13" pointList="104,-60,104,-52" />
+
+<item itemtype="Connector" uid="Connector-9" startpinid="LedMatrix-2-pinCol7" endpinid="ResistorDip-3-resistor7-ePin15" pointList="112,-60,112,-52" />
+
+<item itemtype="Connector" uid="Connector-12" startpinid="LedMatrix-2-pinRow1" endpinid="mega328-1-PORTD5" pointList="40,-124,36,-124,36,-172,-72,-172,-72,-52,-56,-52" />
+
+<item itemtype="Connector" uid="Connector-47" startpinid="LedMatrix-2-pinRow4" endpinid="mega328-1-PORTC0" pointList="40,-100,4,-100,4,-92,-8,-92" />
+
+<item itemtype="Connector" uid="Connector-48" startpinid="LedMatrix-2-pinRow5" endpinid="mega328-1-PORTC1" pointList="40,-92,16,-92,16,-104,0,-104,0,-100,-8,-100" />
+
+<item itemtype="Connector" uid="Connector-49" startpinid="LedMatrix-2-pinRow6" endpinid="mega328-1-PORTC2" pointList="40,-84,20,-84,20,-108,-8,-108" />
+
+<item itemtype="Connector" uid="Connector-50" startpinid="LedMatrix-2-pinRow7" endpinid="mega328-1-PORTC3" pointList="40,-76,24,-76,24,-116,-8,-116" />
+
+<item itemtype="Connector" uid="Connector-51" startpinid="ResistorDip-3-resistor7-ePin14" endpinid="mega328-1-PORTD3" pointList="112,-20,112,20,-96,20,-96,-100,-56,-100" />
+
+<item itemtype="Connector" uid="Connector-52" startpinid="ResistorDip-3-resistor6-ePin12" endpinid="mega328-1-PORTD2" pointList="104,-20,104,12,-88,12,-88,-108,-56,-108" />
+
+<item itemtype="Connector" uid="Connector-53" startpinid="ResistorDip-3-resistor5-ePin10" endpinid="mega328-1-PORTB5" pointList="96,-20,96,-16,40,-16,40,-60,-8,-60" />
+
+<item itemtype="Connector" uid="Connector-54" startpinid="ResistorDip-3-resistor4-ePin8" endpinid="mega328-1-PORTB4" pointList="88,-20,88,-12,36,-12,36,-52,-8,-52" />
+
+<item itemtype="Connector" uid="Connector-55" startpinid="ResistorDip-3-resistor3-ePin6" endpinid="mega328-1-PORTB3" pointList="80,-20,80,-8,32,-8,32,-44,-8,-44" />
+
+<item itemtype="Connector" uid="Connector-56" startpinid="ResistorDip-3-resistor2-ePin4" endpinid="mega328-1-PORTB2" pointList="72,-20,72,-4,28,-4,28,-36,-8,-36" />
+
+<item itemtype="Connector" uid="Connector-57" startpinid="ResistorDip-3-resistor1-ePin2" endpinid="mega328-1-PORTB1" pointList="64,-20,64,0,24,0,24,-28,-8,-28" />
+
+<item itemtype="Connector" uid="Connector-11" startpinid="LedMatrix-2-pinRow0" endpinid="mega328-1-PORTD4" pointList="40,-132,40,-176,-80,-176,-80,-92,-56,-92" />
+
+<item itemtype="Connector" uid="Connector-76" startpinid="LedMatrix-2-pinRow2" endpinid="mega328-1-PORTD6" pointList="40,-116,32,-116,32,-164,-68,-164,-68,-44,-56,-44" />
+
+<item itemtype="Connector" uid="Connector-77" startpinid="LedMatrix-2-pinRow3" endpinid="mega328-1-PORTD7" pointList="40,-108,28,-108,28,-160,-64,-160,-64,-36,-56,-36" />
+
+<item itemtype="Connector" uid="Connector-78" startpinid="ResistorDip-3-resistor0-ePin0" endpinid="mega328-1-PORTB0" pointList="56,-20,56,4,-56,4,-56,-28" />
+
+</circuit>

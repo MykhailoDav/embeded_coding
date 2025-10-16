@@ -370,8 +370,8 @@ static void draw_P(void)
     static uint16_t frame = 0;
     frame++;
 
-    // Blink every 60 frames
-    bool visible = (frame / 60) % 2 == 0;
+    // Blink every 80 frames
+    bool visible = (frame / 80) % 2 == 0;
 
     matrix_clear_buffer();
 

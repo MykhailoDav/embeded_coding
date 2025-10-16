@@ -1,0 +1,52 @@
+{
+	"folders": [
+		{
+			"name": "lab-1",
+			"path": "lab-1"
+		},
+		{
+			"name": "lab-2",
+			"path": "lab-2"
+		},
+		{
+			"name": "4-bit-led-digital-module",
+			"path": "4-bit-led-digital-module"
+		},
+		{
+			"name": "counter",
+			"path": "counter"
+		},
+		{
+			"name": "stopwatch",
+			"path": "stopwatch"
+		},
+		{
+			"name": "Lab-4_1",
+			"path": "Lab-4_1"
+		},
+		{
+			"name": "lab-4_2",
+			"path": "lab-4_2"
+		},
+		{
+			"name": "led_display_8_32",
+			"path": "led_display_8_32"
+		},
+		{
+			"name": "Tetris",
+			"path": "Tetris"
+		},
+		{
+			"path": "IR"
+		},
+		{
+			"name": "UART_test",
+			"path": "UART_test"
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"irsensor.h": "c"
+		}
+	}
+}

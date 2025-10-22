@@ -42,11 +42,20 @@
 		{
 			"name": "UART_test",
 			"path": "UART_test"
+		},
+		{
+			"name": "UART_display",
+			"path": "UART_display"
+		},
+		{
+			"name": "Microphone",
+			"path": "Microphone"
 		}
 	],
 	"settings": {
 		"files.associations": {
-			"irsensor.h": "c"
+			"irsensor.h": "c",
+			"uart.h": "c"
 		}
 	}
 }

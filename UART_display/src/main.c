@@ -1,11 +1,15 @@
 #include "MAX7219Matrix.h"
 #include "SimpleSPI.h"
 #include "Font8x8.h"
-#include <stddef.h>
-#include <stdbool.h>
-#include <stdint.h>
+#include "USART.h"
+
+#include <avr/io.h>
 #include <util/delay.h>
 #include <string.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <ctype.h>
 
 #define MATRIX_WIDTH 32
 #define MATRIX_HEIGHT 8
@@ -13,42 +17,57 @@
 #define GLYPH_SPACING 1
 #define TEXT_GAP 20
 
+void setup();
+void loop();
 const FontChar *findChar(const char *ch);
 int calcTextWidth(const char *txt);
 void drawTextOnce(int offset);
 void drawTextWrapped(int offset);
-void setup(void);
-void loop(void);
+void updateDisplay(void);
+void uart_line_received(uint8_t *buf);
 
-const char text[] = "DAVYDENKO MYKHAILO IK-31";
+char text[128] = "HELLO WORLD";
+char lastCommand[128] = "";
+char inputBuffer[128] = "";
+uint8_t inputLength = 0;
 int textPos = MATRIX_WIDTH;
 int textWidth = 0;
+bool newTextAvailable = false;
 
-void setup(void)
+void setup()
 {
-  max7219_init(4, 3);
+  max7219_init(4, 0);
   max7219_clear();
 
+  USART_Init(9600);
+  USART_SetStdStreams();
+  USART_SetCallback(uart_line_received);
+
+  printf("Ready. Type text and press Enter.\r\n$: ");
+
+  textWidth = calcTextWidth(text) + TEXT_GAP;
+}
+
+void loop()
+{
+  USART_poll();
+  updateDisplay();
+}
+
+void uart_line_received(uint8_t *buf)
+{
+  strncpy(text, (char *)buf, sizeof(text) - 1);
+  text[sizeof(text) - 1] = 0;
+
+  //for (int i = 0; text[i]; i++)
+  //{
+  //  text[i] = toupper((unsigned char)text[i]);
+  //}
   textWidth = calcTextWidth(text) + TEXT_GAP;
   textPos = MATRIX_WIDTH;
-}
+  newTextAvailable = true;
 
-void loop(void)
-{
-  drawTextWrapped(textPos);
-  textPos--;
-
-  if (textPos <= -textWidth)
-    textPos += textWidth;
-
-  _delay_ms(70);
-}
-
-int main(void)
-{
-  setup();
-  for (;;)
-    loop();
+  printf("Text updated: %s\r\n", text);
 }
 
 const FontChar *findChar(const char *ch)
@@ -134,4 +153,25 @@ void drawTextWrapped(int offset)
   drawTextOnce(offset);
   drawTextOnce(offset + textWidth);
   matrix_draw();
+}
+
+void updateDisplay(void)
+{
+  drawTextWrapped(textPos);
+  textPos--;
+
+  if (textPos <= -textWidth)
+    textPos += textWidth;
+
+  _delay_ms(70);
+}
+
+int main(void)
+{
+  setup();
+
+  for (;;)
+  {
+    loop();
+  }
 }

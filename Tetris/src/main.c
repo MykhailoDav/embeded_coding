@@ -12,7 +12,7 @@ TetrisGame game;
 
 void setup()
 {
-    max7219_init(4, 0);
+    max7219_init(4, 3);
     max7219_clear();
     TetrisButtons_Init(&btns);
 

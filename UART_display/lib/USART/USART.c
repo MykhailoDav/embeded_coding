@@ -91,6 +91,7 @@ void USART_poll(void)
                 printf("\r\n$: ");
             }
         }
+        
 
         // BACKSPACE
         else if (ch == 0x08 || ch == 0x7F)

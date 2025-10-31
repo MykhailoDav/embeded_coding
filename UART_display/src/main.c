@@ -107,7 +107,7 @@ void uart_line_received(uint8_t *buf)
     if (val >= 10 && val <= 500)
     {
       scrollDelay = 500 / val;
-      printf("Speed set to %d ms\r\n", scrollDelay);
+      printf("Speed delay set to %d ms\r\n", scrollDelay);
     }
     else
     {
@@ -129,7 +129,6 @@ void uart_line_received(uint8_t *buf)
   // --- clear ---
   else if (strcmp(cmd, "clear") == 0)
   {
-    // вимикаємо переривання на час SPI передавання
     uint8_t sreg = SREG;
     cli();
     max7219_clear();
@@ -150,7 +149,6 @@ void uart_line_received(uint8_t *buf)
 
   prompt();
 
-  // знову дозволяємо прокрутку (крім clear або stop)
   if (strcmp(cmd, "stop") != 0 && strcmp(cmd, "clear") != 0)
     scrollEnabled = true;
 }

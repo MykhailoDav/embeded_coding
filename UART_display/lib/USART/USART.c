@@ -1,11 +1,9 @@
 #include "USART.h"
 #include <string.h>
 #include <stdarg.h>
+#include <stdbool.h>
 
 #define RX_BUF_SIZE 64
-
-static uint8_t rx_buf[RX_BUF_SIZE];
-static uint8_t rx_buf_len = 0;
 static USART_callback_t m_usart_callback = NULL;
 
 void USART_Init(uint32_t baud)
@@ -38,8 +36,14 @@ uint8_t USART_Receive(void)
 int uart_putch(char ch, FILE *stream)
 {
     if (ch == '\n')
+    {
         USART_PutChar('\r');
-    USART_PutChar(ch);
+        USART_PutChar('\n');
+    }
+    else
+    {
+        USART_PutChar(ch);
+    }
     return 0;
 }
 
@@ -68,13 +72,23 @@ void USART_poll(void)
     static char lastCommand[128];
     static uint8_t inputLength = 0;
 
-    //Enter
     if (UCSR0A & (1 << RXC0))
     {
         uint8_t ch = UDR0;
 
+        // Enter
         if (ch == '\r' || ch == '\n')
         {
+            static bool lastWasEnter = false;
+
+            if (lastWasEnter)
+            {
+                lastWasEnter = false;
+                return;
+            }
+
+            lastWasEnter = (ch == '\r');
+
             if (inputLength > 0)
             {
                 inputBuffer[inputLength] = '\0';
@@ -91,7 +105,6 @@ void USART_poll(void)
                 printf("\r\n$: ");
             }
         }
-        
 
         // BACKSPACE
         else if (ch == 0x08 || ch == 0x7F)
@@ -107,13 +120,14 @@ void USART_poll(void)
         // ARROW UP
         else if (ch == 0x1B)
         {
-            while (!(UCSR0A & (1 << RXC0)))
-                ;
+            if (!(UCSR0A & (1 << RXC0)))
+                return;
             if (UDR0 == '[')
             {
-                while (!(UCSR0A & (1 << RXC0)))
-                    ;
-                if (UDR0 == 'A')
+                if (!(UCSR0A & (1 << RXC0)))
+                    return;
+                uint8_t next = UDR0;
+                if (next == 'A')
                 {
                     while (inputLength--)
                         printf("\b \b");
@@ -125,6 +139,7 @@ void USART_poll(void)
                 }
             }
         }
+
         else
         {
             if (inputLength < sizeof(inputBuffer) - 1)

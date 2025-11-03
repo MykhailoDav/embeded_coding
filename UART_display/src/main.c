@@ -41,11 +41,11 @@ void setup()
 {
   max7219_init(4, 0);
   max7219_clear();
-
+  
   USART_Init(9600);
   USART_SetStdStreams();
   USART_SetCallback(uart_line_received);
-
+  
   // display_help_message();
   prompt();
   textWidth = calcTextWidth(text) + TEXT_GAP;

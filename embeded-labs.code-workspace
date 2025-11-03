@@ -55,7 +55,8 @@
 	"settings": {
 		"files.associations": {
 			"irsensor.h": "c",
-			"uart.h": "c"
+			"uart.h": "c",
+			"simplespi.h": "c"
 		}
 	}
 }

@@ -48,8 +48,12 @@
 			"path": "UART_display"
 		},
 		{
-			"name": "Microphone",
-			"path": "Microphone"
+			"name": "I2s_display",
+			"path": "I2s_display"
+		},
+		{
+			"name": "I2s_display_hardware",
+			"path": "I2s_display_hardware"
 		}
 	],
 	"settings": {

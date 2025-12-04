@@ -48,12 +48,12 @@
 			"path": "UART_display"
 		},
 		{
-			"name": "I2s_display",
-			"path": "I2s_display"
-		},
-		{
 			"name": "I2s_display_hardware",
 			"path": "I2s_display_hardware"
+		},
+		{
+			"name": "i2c_lcd",
+			"path": "i2c_lcd"
 		}
 	],
 	"settings": {

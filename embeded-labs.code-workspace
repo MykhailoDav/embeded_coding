@@ -54,6 +54,10 @@
 		{
 			"name": "i2c_lcd",
 			"path": "i2c_lcd"
+		},
+		{
+			"name": "one_wire",
+			"path": "one_wire"
 		}
 	],
 	"settings": {

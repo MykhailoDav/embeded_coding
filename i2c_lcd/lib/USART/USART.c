@@ -7,6 +7,7 @@
 static uint8_t rx_buf[RX_BUF_SIZE];
 static uint8_t rx_buf_len = 0;
 static USART_callback_t m_usart_callback = NULL;
+static uint8_t last_char = 0;  // Для відстеження попереднього символу
 
 void USART_Init(uint32_t baud)
 {
@@ -72,16 +73,31 @@ void USART_poll(void)
 
         if (ch == '\r' || ch == '\n')
         {
+            // Ігноруємо \n який приходить одразу після \r
+            if (ch == '\n' && last_char == '\r')
+            {
+                last_char = 0;  // Скидаємо
+                return;
+            }
+            
+            last_char = ch;
+            
+            USART_PutChar('\r');  // Додаємо echo для Enter
+            USART_PutChar('\n');
+            
             if (rx_buf_len > 0)
             {
                 if (m_usart_callback)
                     m_usart_callback(rx_buf);
 
                 rx_buf_len = 0;
+                rx_buf[0] = 0;  // Очистити буфер
             }
         }
         else
         {
+            last_char = ch;
+            
             if (rx_buf_len < RX_BUF_SIZE - 1)
             {
                 USART_PutChar(ch); // echo
@@ -91,6 +107,7 @@ void USART_poll(void)
             else
             {
                 rx_buf_len = 0;
+                rx_buf[0] = 0;
                 printf("USART, Buffer overflow");
             }
         }

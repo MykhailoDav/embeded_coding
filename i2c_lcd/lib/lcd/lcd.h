@@ -1,7 +1,7 @@
 #ifndef __LCD_H__
 #define __LCD_H__
 
-#define LCD_ADDR 0x40
+#define LCD_ADDR 0x4E
 
 uint8_t LCD_Init(uint8_t addr);
 void LCD_Clear(void);

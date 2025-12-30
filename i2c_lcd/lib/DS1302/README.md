@@ -1,8 +1,8 @@
-# DS1302 RTC Бібліотека
+# DS1302 RTC Library
 
-Бібліотека для роботи з модулем Real-Time Clock DS1302.
+Library for working with DS1302 Real-Time Clock module.
 
-## Підключення
+## Connection
 
 | DS1302 | ATmega328P | Arduino |
 |--------|------------|---------|
@@ -12,16 +12,16 @@
 | DAT    | PD6        | D6      |
 | RST    | PD4        | D4      |
 
-## Використання
+## Usage
 
-### Ініціалізація
+### Initialization
 ```c
 #include "DS1302.h"
 
 DS1302_Init();
 ```
 
-### Встановлення часу
+### Setting Time
 ```c
 DS1302_Time time = {
     .seconds = 0,
@@ -36,7 +36,7 @@ DS1302_Time time = {
 DS1302_SetTime(&time);
 ```
 
-### Читання часу
+### Reading Time
 ```c
 DS1302_Time time;
 DS1302_GetTime(&time);
@@ -45,27 +45,27 @@ printf("Time: %02d:%02d:%02d\n", time.hours, time.minutes, time.seconds);
 printf("Date: %02d.%02d.%04d\n", time.date, time.month, time.year);
 ```
 
-## UART Команди
+## UART Commands
 
-- `time` - показати тільки час
-- `temp` - показати тільки температуру
-- `auto` - автоматичне перемикання (кожні 2 сек)
-- `settime HH:MM:SS` - встановити час
-- `setdate DD.MM.YYYY` - встановити дату
-- `help` - показати допомогу
+- `time` - show time only
+- `temp` - show temperature only
+- `auto` - automatic switching (every 2 sec)
+- `settime HH:MM:SS` - set time
+- `setdate DD.MM.YYYY` - set date
+- `help` - show help
 
-## Керування кнопкою
+## Button Control
 
-- **Коротке натискання** - ручне перемикання між режимами (температура ↔ час)
-- **Довге натискання (2 сек)** - увімкнути автоматичний режим (перемикання кожні 2 секунди)
+- **Short press** - manual switching between modes (temperature ↔ time)
+- **Long press (2 sec)** - enable automatic mode (switching every 2 seconds)
 
-## Приклад
+## Example
 
 ```c
 void main(void) {
     DS1302_Init();
     
-    // Встановити час при першому запуску
+    // Set time on first run
     DS1302_Time init_time = {0, 30, 15, 4, 12, 3, 2025};
     DS1302_SetTime(&init_time);
     
@@ -73,7 +73,7 @@ void main(void) {
         DS1302_Time current;
         DS1302_GetTime(&current);
         
-        // Використовувати час
+        // Use time
         _delay_ms(1000);
     }
 }

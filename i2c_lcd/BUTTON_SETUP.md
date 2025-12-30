@@ -1,13 +1,13 @@
-# Weather Station з Кнопкою Керування
+# Weather Station with Button Control
 
-## 📌 Підключення кнопки
+## 📌 Button Connection
 
-Кнопка підключається до піна **PD2 (D2)** на Arduino/ATmega328P.
+The button is connected to pin **PD2 (D2)** on Arduino/ATmega328P.
 
-### Схема підключення:
+### Connection Diagram:
 
 ```
-Кнопка:
+Button:
 ┌─────────────┐
 │   BUTTON    │
 └──┬─────────┬┘
@@ -16,110 +16,110 @@
    │
    └────────────────── PD2 (D2)
 
-Внутрішній pull-up резистор увімкнений програмно!
+Internal pull-up resistor enabled programmatically!
 ```
 
-### Деталі підключення:
+### Connection Details:
 
-| Компонент | Пін Arduino | Пін ATmega328P |
+| Component | Arduino Pin | ATmega328P Pin |
 |-----------|-------------|----------------|
-| Кнопка (один контакт) | D2 | PD2 |
-| Кнопка (другий контакт) | GND | GND |
+| Button (one contact) | D2 | PD2 |
+| Button (second contact) | GND | GND |
 
-**Важливо:** Не потрібен зовнішній резистор - використовується внутрішній pull-up!
-
----
-
-## 🎮 Функції кнопки
-
-### 1️⃣ Одинарне натискання
-- Перемикає режим відображення вручну
-- Вимикає автоматичний режим
-- Показує назву режиму протягом 1 секунди
-
-**Режими:**
-- 🌡️ **TEMPERATURE** - температура, тиск, висота
-- 🕐 **TIME** - час та дата
-
-### 2️⃣ Подвійне натискання (протягом 400 мс)
-- Вмикає автоматичний режим
-- Режими перемикаються кожні 2 секунди
-- Показує "AUTOMATIC MODE" протягом 1 секунди
+**Important:** No external resistor needed - internal pull-up is used!
 
 ---
 
-## ⏱️ Оновлення дисплея
+## 🎮 Button Functions
 
-- **Температура:** оновлюється кожні **500 мс**
-- **Час:** оновлюється **постійно** (кожну мілісекунду через Timer0)
-- **Timer0:** налаштований на переривання кожну **1 мс** для точного відліку часу
+### 1️⃣ Single Press
+- Switches display mode manually
+- Disables automatic mode
+- Shows mode name for 1 second
+
+**Modes:**
+- 🌡️ **TEMPERATURE** - temperature, pressure, altitude
+- 🕐 **TIME** - time and date
+
+### 2️⃣ Double Press (within 400 ms)
+- Enables automatic mode
+- Modes switch every 2 seconds
+- Shows "AUTOMATIC MODE" for 1 second
 
 ---
 
-## 📟 Приклад використання
+## ⏱️ Display Updates
+
+- **Temperature:** updates every **500 ms**
+- **Time:** updates **continuously** (every millisecond via Timer0)
+- **Timer0:** configured for interrupt every **1 ms** for accurate time counting
+
+---
+
+## 📟 Usage Example
 
 ```c
-// Налаштування таймера для millis()
-TCCR0A = (1 << WGM01);  // CTC режим
+// Timer setup for millis()
+TCCR0A = (1 << WGM01);  // CTC mode
 TCCR0B = (1 << CS01) | (1 << CS00);  // Prescaler 64
-OCR0A = 249;  // 250 тактів = 1 мс
-TIMSK0 = (1 << OCIE0A);  // Переривання
+OCR0A = 249;  // 250 ticks = 1 ms
+TIMSK0 = (1 << OCIE0A);  // Interrupt
 
-// Ініціалізація кнопки
-DDRD &= ~(1 << BUTTON_PIN);  // Вхід
+// Button initialization
+DDRD &= ~(1 << BUTTON_PIN);  // Input
 PORTD |= (1 << BUTTON_PIN);  // Pull-up
 Buttons_Init(&button, 1);
 
-// Обробка кнопки в loop
+// Button processing in loop
 Buttons_Update(millis());
 
 if (button_state.double_click) {
-    // Автоматичний режим
+    // Automatic mode
 }
 if (button_state.released) {
-    // Перемкнути режим
+    // Switch mode
 }
 ```
 
 ---
 
-## 🔧 Налаштування бібліотеки Buttons
+## 🔧 Buttons Library Configuration
 
-### Додані можливості:
-- ✅ Детекція подвійного кліку
-- ✅ Таймаут для подвійного кліку: **400 мс**
-- ✅ Лічильник кліків
-- ✅ Час останнього відпускання кнопки
+### Added Features:
+- ✅ Double-click detection
+- ✅ Double-click timeout: **400 ms**
+- ✅ Click counter
+- ✅ Last release time
 
-### Нові поля в `ButtonState`:
+### New fields in `ButtonState`:
 ```c
-bool double_click;              // Подвійний клік детектовано
-uint32_t last_release_time;     // Час останнього відпускання
-uint8_t click_count;            // Лічильник кліків
+bool double_click;              // Double-click detected
+uint32_t last_release_time;     // Last release time
+uint8_t click_count;            // Click counter
 ```
 
 ---
 
-## 🖥️ Відображення на LCD
+## 🖥️ LCD Display
 
-### Режим TEMPERATURE:
+### TEMPERATURE Mode:
 ```
 🌡23.4C H:250m
 P:101325 Pa
 ```
 
-### Режим TIME:
+### TIME Mode:
 ```
 04.12.2025 Wed
     15:30:45
 ```
 
-### При перемиканні (1 сек):
+### When switching (1 sec):
 ```
   TEMPERATURE
      MODE
 ```
-або
+or
 ```
    AUTOMATIC
      MODE
@@ -127,11 +127,11 @@ P:101325 Pa
 
 ---
 
-## 🚀 Запуск
+## 🚀 Getting Started
 
-1. Підключіть кнопку до PD2 (D2) та GND
-2. Завантажте код
-3. Натисніть кнопку два рази - увімкнеться автоматичний режим
-4. Натисніть один раз - перемкніть режим вручну
+1. Connect button to PD2 (D2) and GND
+2. Upload the code
+3. Press button twice - automatic mode will activate
+4. Press once - switch mode manually
 
-**Готово!** ✨
+**Done!** ✨

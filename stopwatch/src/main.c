@@ -90,15 +90,15 @@ int main(void)
       if (btn_stop.pressed)
         running = false;
 
-      // якщо гірлянда запущена
+      // if garland effect is running
       if (display_garland_active())
       {
         in_garland_effect = true;
-        running = false; // зупинити підрахунок
+        running = false; // stop counting
       }
       else if (in_garland_effect)
       {
-        // гірлянда завершилась
+        // garland effect finished
         in_garland_effect = false;
       }
 
